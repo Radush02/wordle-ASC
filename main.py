@@ -37,9 +37,6 @@ def jocWordle(x):
         jocWordle(x)
 
 def main():
-    # x=str(input("Cuvant= "))
-    # x=x.upper()
-    # jocWordle(x)
     for i in range(5):
         apr[i]=dict(sorted(apr[i].items(),reverse=True, key=lambda item: item[1]))
         print(apr[i])
