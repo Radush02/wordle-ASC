@@ -4,6 +4,7 @@ from multiprocessing import Process
 
 
 data=urlopen("https://cs.unibuc.ro/~crusu/asc/cuvinte_wordle.txt")
+
 cuvinte=[]
 for line in data:
     cuvinte.append(str(line)[2:7])
@@ -22,12 +23,15 @@ def jocWordle(x):
         aux=deGhicit
         while x != deGhicit:
             rez = ""
-            for i in range(0, 5):
+            for i, litera in enumerate(x):
                 if x[i] == deGhicit[i]:
-                    rez += "2"
+                    rez += "🟩"
+                elif litera in deGhicit[i:]:
+                    rez += "🟨"
                 else:
-                    rez += "0"
+                    rez += "⬛"
             print(str(rez))
+            print(f"d: {deGhicit}")
             x = str(input("Cuvant= "))
             x = x.upper()
         else:
@@ -37,9 +41,12 @@ def jocWordle(x):
         jocWordle(x)
 
 def main():
-    for i in range(5):
-        apr[i]=dict(sorted(apr[i].items(),reverse=True, key=lambda item: item[1]))
-        print(apr[i])
+    x=str(input("Cuvant= "))
+    x=x.upper()
+    jocWordle(x)
+    # for i in range(5):
+    #      apr[i]=dict(sorted(apr[i].items(),reverse=True, key=lambda item: item[1]))
+    #      print(apr[i])
 
 if __name__=="__main__":
     main()
