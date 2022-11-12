@@ -1,7 +1,7 @@
 from urllib.request import urlopen
 import random
 from multiprocessing import Process
-
+import math
 
 data=urlopen("https://cs.unibuc.ro/~crusu/asc/cuvinte_wordle.txt")
 
@@ -12,11 +12,27 @@ cuvinte=cuvinte[:len(cuvinte)-1]
 deGhicit=cuvinte[random.randint(0,len(cuvinte)-1)]
 
 apr=[]
+inf=[]
 for i in range(5):
     apr.append(dict([(chr(i), 0) for i in range(65, 91)]))
+    inf.append(dict([(chr(i), 0) for i in range(65, 91)]))
 for c in cuvinte:
     for i in range(5):
         apr[i][c[i]]+=1
+
+def getInformatie(apr):#apartia fiecare litere in totalul de cuvinte
+    temp = 0
+    for x in apr:
+        total=len(cuvinte)
+        for k in x:
+            try:
+                inf[temp][k]=math.log2(total/x[k])
+            except ZeroDivisionError:
+                inf[temp][k]=0
+        temp+=1
+    for i in range(5):
+        inf[i]=dict(sorted(inf[i].items(), key=lambda item: item[1]))
+        print(inf[i])
 
 def jocWordle(x):
     try:
@@ -41,12 +57,13 @@ def jocWordle(x):
         jocWordle(x)
 
 def main():
-    x=str(input("Cuvant= "))
-    x=x.upper()
-    jocWordle(x)
+    # x=str(input("Cuvant= "))
+    # x=x.upper()
+    # jocWordle(x)
     # for i in range(5):
-    #      apr[i]=dict(sorted(apr[i].items(),reverse=True, key=lambda item: item[1]))
-    #      print(apr[i])
+    #       apr[i]=dict(sorted(apr[i].items(),reverse=True, key=lambda item: item[1]))
+    #       print(apr[i])
+    getInformatie(apr)
 
 if __name__=="__main__":
     main()
