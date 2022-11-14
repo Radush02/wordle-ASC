@@ -34,6 +34,8 @@ def getInformatie(apr):#apartia fiecare litere in totalul de cuvinte
         inf[i]=dict(sorted(inf[i].items(), key=lambda item: item[1]))
         print(inf[i])
 
+
+
 def jocWordle(x):
     try:
         aux=deGhicit
@@ -56,6 +58,42 @@ def jocWordle(x):
         x=x[:4]
         jocWordle(x)
 
+
+back={}
+a = [None] * 5
+def afis(a,n):
+    b=""
+    for i in range(n):
+        b+=a[i]
+    back[b]=0
+def genlist(n,a,i):
+    if i==n:
+        afis(a,n)
+        return
+    a[i]="⬛"
+    genlist(n,a,i+1)
+    a[i]="🟨"
+    genlist(n,a,i+1)
+    a[i]="🟩"
+    genlist(n,a,i+1)
+genlist(5,a,0)
+entropie={}
+print("Citit fisier!")
+def getEntropie():
+    for x in cuvinte:
+        for i in back:
+            back[i]=0
+        for deGhicit in cuvinte:
+            rez=""
+            for i, litera in enumerate(x):
+                        if x[i] == deGhicit[i]:
+                            rez += "🟩"
+                        elif litera in deGhicit[i:]:
+                            rez += "🟨"
+                        else:
+                            rez += "⬛"
+            back[rez]+=1
+        print(x,back)
 def main():
     # x=str(input("Cuvant= "))
     # x=x.upper()
@@ -63,7 +101,8 @@ def main():
     # for i in range(5):
     #       apr[i]=dict(sorted(apr[i].items(),reverse=True, key=lambda item: item[1]))
     #       print(apr[i])
-    getInformatie(apr)
+    #getInformatie(apr)
+    getEntropie()
 
 if __name__=="__main__":
     main()
