@@ -13,26 +13,23 @@ cuvinte=cuvinte[:len(cuvinte)-1]
 deGhicit=cuvinte[random.randint(0,len(cuvinte)-1)]
 
 lg_cuv=len(cuvinte)
-apr=[]
-inf=[]
-for i in range(5):
-    apr.append(dict([(chr(i), 0) for i in range(65, 91)]))
-    inf.append(dict([(chr(i), 0) for i in range(65, 91)]))
-for c in cuvinte:
-    for i in range(5):
-        apr[i][c[i]]+=1
-
+apr=dict([(chr(i), 0) for i in range(65, 91)])
 def jocWordle(x):
     try:
         while x != deGhicit:
+            for i in deGhicit:
+                apr[i]+=1
             rez = ""
             for i in  range(5):
                 if x[i] == deGhicit[i]:
+                    apr[x[i]]-=1
                     rez += "2"
-                elif x[i] in deGhicit[i:]:
+                elif apr[x[i]] > 0 and x[i] in deGhicit:
                     rez += "1"
+                    apr[x[i]]-=1
                 else:
                     rez += "0"
+                # print(apr)
             print(str(rez))
             print(f"d: {deGhicit}")
             x = str(input("Cuvant= "))
@@ -95,10 +92,10 @@ def getEntropie():
             print(x,ent,file=f)
             entropie[x]=back
 def main():
-    # x=str(input("Cuvant= "))
-    # x=x.upper()
-    # jocWordle(x)
-    getEntropie()
+    x=str(input("Cuvant= "))
+    x=x.upper()
+    jocWordle(x)
+    # getEntropie()
 
 if __name__=="__main__":
     main()
