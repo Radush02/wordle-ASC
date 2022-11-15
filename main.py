@@ -2,7 +2,7 @@ from urllib.request import urlopen
 import random
 from multiprocessing import Process
 import math
-
+import time
 data=urlopen("https://cs.unibuc.ro/~crusu/asc/cuvinte_wordle.txt")
 
 cuvinte=[]
@@ -11,6 +11,7 @@ for line in data:
 cuvinte=cuvinte[:len(cuvinte)-1]
 deGhicit=cuvinte[random.randint(0,len(cuvinte)-1)]
 
+lg_cuv=len(cuvinte)
 apr=[]
 inf=[]
 for i in range(5):
@@ -43,11 +44,11 @@ def jocWordle(x):
             rez = ""
             for i, litera in enumerate(x):
                 if x[i] == deGhicit[i]:
-                    rez += "🟩"
+                    rez += "2"
                 elif litera in deGhicit[i:]:
-                    rez += "🟨"
+                    rez += "1"
                 else:
-                    rez += "⬛"
+                    rez += "0"
             print(str(rez))
             print(f"d: {deGhicit}")
             x = str(input("Cuvant= "))
@@ -70,30 +71,43 @@ def genlist(n,a,i):
     if i==n:
         afis(a,n)
         return
-    a[i]="⬛"
+    a[i]="0"
     genlist(n,a,i+1)
-    a[i]="🟨"
+    a[i]="1"
     genlist(n,a,i+1)
-    a[i]="🟩"
+    a[i]="2"
     genlist(n,a,i+1)
 genlist(5,a,0)
 entropie={}
 print("Citit fisier!")
+
+
 def getEntropie():
-    for x in cuvinte:
-        for i in back:
-            back[i]=0
-        for deGhicit in cuvinte:
-            rez=""
-            for i, litera in enumerate(x):
-                        if x[i] == deGhicit[i]:
-                            rez += "🟩"
-                        elif litera in deGhicit[i:]:
-                            rez += "🟨"
-                        else:
-                            rez += "⬛"
-            back[rez]+=1
-        print(x,back)
+    with open("entropie.txt","a") as f:
+        for x in cuvinte:
+            start=time.time()
+            for i in back:
+                back[i]=0
+            for deGhicit in cuvinte:
+                rez=""
+                for i, litera in enumerate(x):
+                            if x[i] == deGhicit[i]:
+                                rez += "2"
+                            elif litera in deGhicit[i:]:
+                                rez += "1"
+                            else:
+                                rez += "0"
+                back[rez]+=1
+            ent=0
+            for i in back:
+                p_i=back[i]/lg_cuv
+                try:
+                    ent+=p_i*math.log2(1/p_i)
+                except ZeroDivisionError:
+                    ent+=0
+            print(time.time()-start)
+            print(x,ent,file=f)
+            entropie[x]=back
 def main():
     # x=str(input("Cuvant= "))
     # x=x.upper()
