@@ -3,6 +3,7 @@ import random
 from multiprocessing import Process
 import math
 import time
+import os
 data=urlopen("https://cs.unibuc.ro/~crusu/asc/cuvinte_wordle.txt")
 
 cuvinte=[]
@@ -21,31 +22,14 @@ for c in cuvinte:
     for i in range(5):
         apr[i][c[i]]+=1
 
-def getInformatie(apr):#apartia fiecare litere in totalul de cuvinte
-    temp = 0
-    for x in apr:
-        total=len(cuvinte)
-        for k in x:
-            try:
-                inf[temp][k]=math.log2(total/x[k])
-            except ZeroDivisionError:
-                inf[temp][k]=0
-        temp+=1
-    for i in range(5):
-        inf[i]=dict(sorted(inf[i].items(), key=lambda item: item[1]))
-        print(inf[i])
-
-
-
 def jocWordle(x):
     try:
-        aux=deGhicit
         while x != deGhicit:
             rez = ""
-            for i, litera in enumerate(x):
+            for i in  range(5):
                 if x[i] == deGhicit[i]:
                     rez += "2"
-                elif litera in deGhicit[i:]:
+                elif x[i] in deGhicit[i:]:
                     rez += "1"
                 else:
                     rez += "0"
@@ -83,6 +67,8 @@ print("Citit fisier!")
 
 
 def getEntropie():
+    if os.path.exists("entropie.txt"):
+        os.remove("entropie.txt")
     with open("entropie.txt","a") as f:
         for x in cuvinte:
             start=time.time()
@@ -90,10 +76,10 @@ def getEntropie():
                 back[i]=0
             for deGhicit in cuvinte:
                 rez=""
-                for i, litera in enumerate(x):
+                for i in range(5):
                             if x[i] == deGhicit[i]:
                                 rez += "2"
-                            elif litera in deGhicit[i:]:
+                            elif x[i] in deGhicit[i:]:
                                 rez += "1"
                             else:
                                 rez += "0"
@@ -112,10 +98,6 @@ def main():
     # x=str(input("Cuvant= "))
     # x=x.upper()
     # jocWordle(x)
-    # for i in range(5):
-    #       apr[i]=dict(sorted(apr[i].items(),reverse=True, key=lambda item: item[1]))
-    #       print(apr[i])
-    #getInformatie(apr)
     getEntropie()
 
 if __name__=="__main__":
