@@ -4,20 +4,29 @@ from multiprocessing import Process
 import math
 import time
 import os
-data=urlopen("https://cs.unibuc.ro/~crusu/asc/cuvinte_wordle.txt")
+
 
 cuvinte=[]
-for line in data:
-    cuvinte.append(str(line)[2:7])
-cuvinte=cuvinte[:len(cuvinte)-1]
-deGhicit=cuvinte[random.randint(0,len(cuvinte)-1)]
+deGhicit=""
+def init_cuvinte():
+    try:
+        global cuvinte,deGhicit,lg_cuv
+        data = urlopen("https://cs.unibuc.ro/~crusu/asc/cuvinte_wordle.txt")
+        cuvinte=[]
+        for line in data:
+            cuvinte.append(str(line)[2:7])
+        cuvinte=cuvinte[:len(cuvinte)-1]
+        lg_cuv = len(cuvinte)
+        deGhicit=cuvinte[random.randint(0,len(cuvinte)-1)]
+    except:
+        print("Nu exista conexiune la internet pt a lua lista de cuvinte.")
+        exit()
 
 cnt_jocuri=0
 lg_cuv=len(cuvinte)
 def jocWordle(incercare):
     try:
-        global cuvinte
-        global meciuriJucate
+        global cuvinte,meciuriJucate,meciuriTotale
         while incercare != deGhicit:
             meciuriJucate += 1
             rez = ""
@@ -28,8 +37,7 @@ def jocWordle(incercare):
                     rez += "1"
                 else:
                     rez += "0"
-            print(str(rez))
-            print(f"d: {deGhicit}")
+            #print(str(rez))
             for i in range(5):
                 if rez[i]=="0":
                     cuvinte=([cuv for cuv in cuvinte if incercare[i] not in cuv])
@@ -41,16 +49,16 @@ def jocWordle(incercare):
                 cuvinte.remove(incercare)
             except:
                 pass
-            print(f"Cuvant optim: {getEntropie()}")
-            incercare = str(input("Cuvant= "))
-            incercare = incercare.upper()
+            incercare=getEntropie()
         else:
             print(f"Cuvantul era {deGhicit}, ghicit in {meciuriJucate} incercari")
+            meciuriTotale+=meciuriJucate
     except IndexError:
         incercare=incercare[:4]
         jocWordle(incercare)
 
 meciuriJucate=0
+meciuriTotale=0
 back={}
 a = [None] * 5
 def afis(a,n):
@@ -105,7 +113,12 @@ cuv_optim="TAREI"
 def main():
     # x=str(input("Cuvant= "))
     # x=x.upper()
-    jocWordle(cuv_optim)
-
+    global meciuriJucate
+    x=int(input("Numar jocuri: "))
+    for i in range(x):
+        init_cuvinte()
+        jocWordle(cuv_optim)
+        meciuriJucate=0
+    print("Medie jocuri: ",meciuriTotale/x)
 if __name__=="__main__":
     main()
