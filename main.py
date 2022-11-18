@@ -12,30 +12,45 @@ for line in data:
 cuvinte=cuvinte[:len(cuvinte)-1]
 deGhicit=cuvinte[random.randint(0,len(cuvinte)-1)]
 
+cnt_jocuri=0
 lg_cuv=len(cuvinte)
-def jocWordle(x):
+def jocWordle(incercare):
     try:
-        while x != deGhicit:
+        global cuvinte
+        global meciuriJucate
+        while incercare != deGhicit:
+            meciuriJucate += 1
             rez = ""
             for i in  range(5):
-                if x[i] == deGhicit[i]:
+                if incercare[i] == deGhicit[i]:
                     rez += "2"
-                elif x[i] in deGhicit[i:]:
+                elif incercare[i] in deGhicit:
                     rez += "1"
                 else:
                     rez += "0"
-                # print(apr)
             print(str(rez))
             print(f"d: {deGhicit}")
-            x = str(input("Cuvant= "))
-            x = x.upper()
+            for i in range(5):
+                if rez[i]=="0":
+                    cuvinte=([cuv for cuv in cuvinte if incercare[i] not in cuv])
+                elif rez[i]=="2":
+                    cuvinte=([cuv for cuv in cuvinte if incercare[i] == cuv[i]])
+                elif rez[i]=="1":
+                    cuvinte=([cuv for cuv in cuvinte if incercare[i] in cuv])
+            try:
+                cuvinte.remove(incercare)
+            except:
+                pass
+            print(f"Cuvant optim: {getEntropie()}")
+            incercare = str(input("Cuvant= "))
+            incercare = incercare.upper()
         else:
-            print(f"Cuvantul era {deGhicit}")
+            print(f"Cuvantul era {deGhicit}, ghicit in {meciuriJucate} incercari")
     except IndexError:
-        x=x[:4]
-        jocWordle(x)
+        incercare=incercare[:4]
+        jocWordle(incercare)
 
-
+meciuriJucate=0
 back={}
 a = [None] * 5
 def afis(a,n):
@@ -54,16 +69,14 @@ def genlist(n,a,i):
     a[i]="2"
     genlist(n,a,i+1)
 genlist(5,a,0)
-entropie={}
-print("Citit fisier!")
 
 
 def getEntropie():
     if os.path.exists("entropie.txt"):
         os.remove("entropie.txt")
+    entropie = {}
     with open("entropie.txt","a") as f:
         for x in cuvinte:
-            start=time.time()
             for i in back:
                 back[i]=0
             for deGhicit in cuvinte:
@@ -71,7 +84,7 @@ def getEntropie():
                 for i in range(5):
                             if x[i] == deGhicit[i]:
                                 rez += "2"
-                            elif x[i] in deGhicit[i:]:
+                            elif x[i] in deGhicit:
                                 rez += "1"
                             else:
                                 rez += "0"
@@ -83,14 +96,16 @@ def getEntropie():
                     ent+=p_i*math.log2(1/p_i)
                 except ZeroDivisionError:
                     ent+=0
-            print(time.time()-start)
             print(x,ent,file=f)
-            entropie[x]=back
+            entropie[x]=ent
+    return max(entropie,key=entropie.get)
+
+
+cuv_optim="TAREI"
 def main():
     # x=str(input("Cuvant= "))
     # x=x.upper()
-    # jocWordle(x)
-    getEntropie()
+    jocWordle(cuv_optim)
 
 if __name__=="__main__":
     main()
