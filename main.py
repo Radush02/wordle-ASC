@@ -5,9 +5,10 @@ import math
 import time
 import os
 
-
 cuvinte=[]
 deGhicit=""
+cnt_jocuri=0
+
 def init_cuvinte():
     try:
         global cuvinte,deGhicit,lg_cuv
@@ -22,10 +23,14 @@ def init_cuvinte():
         print("Nu exista conexiune la internet pt a lua lista de cuvinte.")
         exit()
 
-cnt_jocuri=0
 lg_cuv=len(cuvinte)
-fin=open("fin.txt","w")
-fout=open("fout.txt","w")
+if os.path.exists("IPC_Fisier/fin.txt"):
+    os.remove("IPC_Fisier/fin.txt")
+if os.path.exists("IPC_Fisier/fout.txt"):
+    os.remove("IPC_Fisier/fout.txt")
+if os.path.exists("solutii.txt"):
+    os.remove("solutii.txt")
+
 def jocWordle(incercare,fisier):
     global cuvinte,meciuriJucate,meciuriTotale
     meciuriJucate += 1
@@ -37,8 +42,11 @@ def jocWordle(incercare,fisier):
             rez += "1"
         else:
             rez += "0"
+    fout = open("IPC_Fisier/fout.txt", "a+")
     print(rez,file=fout)
-    parseRezultat(rez,incercare,fisier)
+    fout.seek(0)
+    rezultate_obt=fout.read().split()
+    parseRezultat(rezultate_obt[len(rezultate_obt)-1],incercare,fisier)
 
 def parseRezultat(rez,incercare,fisier):
     global cuvinte
@@ -55,12 +63,20 @@ def parseRezultat(rez,incercare,fisier):
         pass
     incercare = getEntropie()
     print(incercare, file=fisier)
+    fin = open("IPC_Fisier/fin.txt", "a+")
     print(incercare, file=fin)
     if incercare is deGhicit:
-         print(f"Cuvantul era {deGhicit}, ghicit in {meciuriJucate} incercari")
-         exit()
+        fisier.seek(0)
+        cuvinte_obtinute = fisier.read().split()
+        print(*cuvinte_obtinute)
+        fout = open("IPC_Fisier/fout.txt", "r")
+        print(*fout.read().split())
+        print(f"Cuvantul era {deGhicit}, ghicit in {meciuriJucate} incercari")
+        exit()
     else:
-         jocWordle(incercare,fisier)
+        fin.seek(0)
+        cuvinte_obtinute=fin.read().split()
+        jocWordle(cuvinte_obtinute[len(cuvinte_obtinute)-1],fisier)
 meciuriJucate=0
 meciuriTotale=0
 back={}
@@ -111,9 +127,7 @@ def getEntropie():
 cuv_optim="TAREI"
 def main():
     global meciuriJucate
-    if os.path.exists("solutii.txt"):
-        os.remove("solutii.txt")
-    f = open("solutii.txt", "a")
+    f = open("solutii.txt", "a+")
     print(cuv_optim,file=f)
     init_cuvinte()
     jocWordle(cuv_optim,f)
