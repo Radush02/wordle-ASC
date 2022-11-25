@@ -69,7 +69,7 @@ def parseRezultat(rez,incercare,fisier):
         print(*cuvinte_obtinute)
         fout = open("IPC_Fisier/fout.txt", "r")
         print(*fout.read().split())
-        print(f"Cuvantul era {deGhicit}, ghicit in {meciuriJucate} incercari")
+        print(f"Cuvantul era {deGhicit}, ghicit in {meciuriJucate+1} incercari")
         exit()
     else:
         fin.seek(0)
