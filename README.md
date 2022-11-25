@@ -21,7 +21,7 @@ Cuvantul cu entropia maxima este <b>TAREI</b>
 ![Entropie maxima](https://cdn.discordapp.com/attachments/954523115055120455/1043996015117733950/tarei.png)
 
 <a href="https://gist.githubusercontent.com/Radush02/65941f6ea83ba117d7d9e203df0552af/raw/8553de5050b741e9889ade49509839587de96e0d/gistfile1.txt">Lista cu numarul de incercari obtinut pentru fiecare cuvant</a><br>
-Numarul mediu de incercari: 4.373 
+Numarul mediu de incercari: 4.373 <br>
 <img src="https://cdn.discordapp.com/attachments/954523115055120455/1045785583617851513/optimizat.png" width=60% height=60% style="display: block; margin-left: auto; margin-right: auto;">
 
 
