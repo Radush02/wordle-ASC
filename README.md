@@ -11,7 +11,7 @@ Rezultatul obtinut pentru cuvantul cu nr. maxim de biti va fi transmis intr-un a
 Pe baza rezultatului obtinut vor fi 3 cazuri:<br>
 <ul>
 <li>Cazul 0: Litera <b>nu</b> este in cuvant. Se vor sterge toate cuvintele ce contin acea litera.</li>
-<li>Cazul 1: Litera este in cuvant, dar nu este pe pozitia corecta. Se vor pastra doar cuvintele ce contin acea litera oriunde in cuvant.</li>
+<li>Cazul 1: Litera este in cuvant, dar nu este pe pozitia corecta. Se vor pastra doar cuvintele ce contin acea litera oriunde in cuvant, insa se vor sterge toate cuvintele ce au litera respectiva pe pozitia indicata.</li>
 <li>Cazul 2: Litera este in cuvant si este pe pozitia corecta. Se vor pastra doar cuvintele ce contin litera respectiva pe pozitia respectiva.</li>
 </ul>
 
@@ -20,10 +20,9 @@ Se va rula programul pana cand va ramane un singur cuvant in lista de cuvinte, c
 Cuvantul cu entropia maxima este <b>TAREI</b>  
 ![Entropie maxima](https://cdn.discordapp.com/attachments/954523115055120455/1043996015117733950/tarei.png)
 
-Numarul mediu de incercari: 4.9596  
-<img src="https://cdn.discordapp.com/attachments/954523115055120455/1045395915579609179/Figure_1.png" width=60% height=60% style="display: block; margin-left: auto; margin-right: auto;">
-
-<a href="https://gist.githubusercontent.com/Radush02/9338bf6649c6b7fee0ff72a4671cca2d/raw/6e2985b3d2b13e60400a2ea7ac4c1251d64a634a/rezultat.txt">Lista cu numarul de incercari obtinut pentru fiecare cuvant</a>
+<a href="https://gist.githubusercontent.com/Radush02/65941f6ea83ba117d7d9e203df0552af/raw/8553de5050b741e9889ade49509839587de96e0d/gistfile1.txt">Lista cu numarul de incercari obtinut pentru fiecare cuvant</a><br>
+Numarul mediu de incercari: 4.373 
+<img src="https://cdn.discordapp.com/attachments/954523115055120455/1045785583617851513/optimizat.png" width=60% height=60% style="display: block; margin-left: auto; margin-right: auto;">
 
 
 ## Referinte

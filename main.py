@@ -1,8 +1,6 @@
 from urllib.request import urlopen
 import random
-from multiprocessing import Process
 import math
-import time
 import os
 
 cuvinte=[]
@@ -56,7 +54,7 @@ def parseRezultat(rez,incercare,fisier):
         elif rez[i] == "2":
             cuvinte = ([cuv for cuv in cuvinte if incercare[i] == cuv[i]])
         elif rez[i] == "1":
-            cuvinte = ([cuv for cuv in cuvinte if incercare[i] in cuv])
+            cuvinte = ([cuv for cuv in cuvinte if incercare[i] in cuv and incercare[i] != cuv[i]])
     try:
         cuvinte.remove(incercare)
     except:
