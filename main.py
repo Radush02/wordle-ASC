@@ -1,27 +1,22 @@
-from urllib.request import urlopen
-import random
-import math
-import os
+import math,os
 
 cuvinte=[]
 deGhicit=""
-cnt_jocuri=0
-
-def init_cuvinte():
-    try:
-        global cuvinte,deGhicit,lg_cuv
-        data = urlopen("https://cs.unibuc.ro/~crusu/asc/cuvinte_wordle.txt")
-        cuvinte=[]
-        for line in data:
-            cuvinte.append(str(line)[2:7])
-        cuvinte=cuvinte[:len(cuvinte)-1]
-        lg_cuv = len(cuvinte)
-        deGhicit=cuvinte[random.randint(0,len(cuvinte)-1)]
-    except:
-        print("Nu exista conexiune la internet pt a lua lista de cuvinte.")
-        exit()
-
+current_try=[]
 lg_cuv=len(cuvinte)
+meciuriJucate=0
+meciuriTotale=0
+cuv_optim="TAREI"
+
+def init_cuvinte(i):
+    global cuvinte,deGhicit,lg_cuv,current_try
+    lista_cuv=open("Cuvinte_wordle.txt","r")
+    cuvinte=lista_cuv.read().split()
+    lg_cuv = len(cuvinte)
+    deGhicit=cuvinte[i]
+    current_try=[]
+    lista_cuv.close()
+
 if os.path.exists("IPC_Fisier/fin.txt"):
     os.remove("IPC_Fisier/fin.txt")
 if os.path.exists("IPC_Fisier/fout.txt"):
@@ -32,19 +27,28 @@ if os.path.exists("solutii.txt"):
 def jocWordle(incercare,fisier):
     global cuvinte,meciuriJucate,meciuriTotale
     meciuriJucate += 1
-    rez = ""
-    for i in range(5):
-        if incercare[i] == deGhicit[i]:
-            rez += "2"
-        elif incercare[i] in deGhicit:
-            rez += "1"
-        else:
-            rez += "0"
-    fout = open("IPC_Fisier/fout.txt", "a+")
-    print(rez,file=fout)
-    fout.seek(0)
-    rezultate_obt=fout.read().split()
-    parseRezultat(rezultate_obt[len(rezultate_obt)-1],incercare,fisier)
+    current_try.append(incercare)
+    if incercare != deGhicit:
+        rez = ""
+        for i in range(5):
+            if incercare[i] == deGhicit[i]:
+                rez += "2"
+            elif incercare[i] in deGhicit:
+                rez += "1"
+            else:
+                rez += "0"
+        fout = open("IPC_Fisier/fout.txt", "w+")
+        print(rez,file=fout)
+        fout.seek(0)
+        rezultate_obt=fout.read().split()
+        fout.close()
+        parseRezultat(rezultate_obt[len(rezultate_obt)-1],incercare,fisier)
+    else:
+        meciuriTotale+=meciuriJucate
+        fout = open("IPC_Fisier/fout.txt", "r")
+        print(f"{deGhicit} {' '.join(current_try)}",file=fisier)
+        fout.close()
+        return
 
 def parseRezultat(rez,incercare,fisier):
     global cuvinte
@@ -60,23 +64,14 @@ def parseRezultat(rez,incercare,fisier):
     except:
         pass
     incercare = getEntropie()
-    print(incercare, file=fisier)
-    fin = open("IPC_Fisier/fin.txt", "a+")
+    fin = open("IPC_Fisier/fin.txt", "w+")
     print(incercare, file=fin)
-    if incercare is deGhicit:
-        fisier.seek(0)
-        cuvinte_obtinute = fisier.read().split()
-        print(*cuvinte_obtinute)
-        fout = open("IPC_Fisier/fout.txt", "r")
-        print(*fout.read().split())
-        print(f"Cuvantul era {deGhicit}, ghicit in {meciuriJucate+1} incercari")
-        exit()
-    else:
-        fin.seek(0)
-        cuvinte_obtinute=fin.read().split()
-        jocWordle(cuvinte_obtinute[len(cuvinte_obtinute)-1],fisier)
-meciuriJucate=0
-meciuriTotale=0
+    fin.seek(0)
+    cuvinte_obtinute=fin.read().split()
+    fin.close()
+    jocWordle(cuvinte_obtinute[len(cuvinte_obtinute)-1],fisier)
+
+
 back={}
 a = [None] * 5
 def afis(a,n):
@@ -122,13 +117,16 @@ def getEntropie():
     return max(entropie,key=entropie.get)
 
 
-cuv_optim="TAREI"
 def main():
     global meciuriJucate
     f = open("solutii.txt", "a+")
-    print(cuv_optim,file=f)
-    init_cuvinte()
-    jocWordle(cuv_optim,f)
+    lg_cuv = 11454
+    for i in range(0,lg_cuv):
+        meciuriJucate=0
+        init_cuvinte(i)
+        jocWordle(cuv_optim,f)
+        print(deGhicit,*current_try,meciuriJucate)
+    print(f"Medie: {meciuriTotale/lg_cuv}")
 
 if __name__=="__main__":
     main()
