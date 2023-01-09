@@ -46,7 +46,7 @@ def jocWordle(incercare,fisier):
     else:
         meciuriTotale+=meciuriJucate
         fout = open("IPC_Fisier/fout.txt", "r")
-        print(f"{deGhicit} {' '.join(current_try)}",file=fisier)
+        print(f"{deGhicit}, {', '.join(current_try)}",file=fisier)
         fout.close()
         return
 
